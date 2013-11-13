@@ -11,7 +11,7 @@ and open the template in the editor.
 body {
     background-color:white;
     color:black;
-    font-size:1em;
+    font-size:100%;
     font-family:Georgia, serif;
     border:0px;
     margin:0px;
@@ -23,93 +23,138 @@ a {
 } 
 
 p {
-    font-size:0.875em;   
+    font-size:1em;   
     border:0px;
     margin:0px;
     padding:0.5em;
 }
 
 #containerCabecalho {
-    background-color: white;
-    color: black;
-    margin: 0px;
-    padding: 0px;
-    width: 100%;   
+    background-color:white;
+    color:black;
+    margin:0px;
+    padding:0px;
+    width:100%;   
 }
 
 #cabecalhoTitulo {
-    float: left;       
-    outline: yellow solid thin;
-    display: table-cell;    
-    display: inline-block;
-    vertical-align: middle;    
+    float:left;       
+    // outline: yellow solid thin;
 }
 
 #cabecalhoTitulo h1{
-    font-family: georgia, serif;
+    font-family:georgia, serif;
     font-size:2.5em;
-    text-align: left;
+    text-align:left;
     border:0px;
     margin:0px;
     padding:0.5em;    
 }
 
 #cabecalhoLogin {
-    float: right;    
-    text-align: right;
-    outline: yellow solid thin;
-    vertical-align: middle;    
+    float:right;    
+    text-align:right;
+    // outline: yellow solid thin;    
 }
 
-
 #containerConteudo {
-    outline: red solid thin;
-    background-color: black;
-    color: white;
+    //outline: red solid thin;
+    background-color:black;
+    color:white;
     border:0px;
     margin:0px;
     padding:0px;
-    width: 100%;
-    clear: both;
-    float: left;
+    width:100%;
+    clear:both;
+    float:left;
 }
 
-#conteudo{
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 960px;
-    min-width: 480px;
-    width: 90%;    
+#containerConteudo form input[type=text],
+#containerConteudo form input[type=password]
+{
+    width: 12em;
+    border: none;
+    font-size: 1em;
+    font-family: Georgia, serif;
+}
+
+#containerConteudo h1{
+    font-size:1.5em;
+    text-align:left;
+    border:0px;
+    margin:0px;
+    padding:1em 0em 0em 0em;
+}
+
+#containerConteudo h2{
+    font-size:1.2em;
+    font-style:italic;
+    text-align:left;
+    border:0px;
+    margin:0px;
+    padding:0em 0em 1em 2em;
+}
+
+#containerConteudo a:link{
+    color: white;
+    font-weight: bold;
+}
+#containerConteudo a:hover{
+    color: white;
+    font-weight: lighter;
+}
+#containerConteudo a:visited{
+    color: white;
+    font-weight: bold;
+}
+#containerConteudo a:active{
+    color: black;
+    font-weight: bold;
+}
+
+#containerConteudo form{
+    text-align: center;
+    //outline: yellow solid thin;
 }
 
 #conteudoEsq{
-    float: left;
-    background-color: black;
-    border-right: medium solid white;
-    width: 40%;
+    float:left;
+    background-color:black;
+    margin: 0.5em 0em 0.5em 0em;
+    
+    padding-right:1.5%;
+    width:48.5%;
+    border-right:2px solid grey;
 }
 
 #conteudoDir{
-    float: right;
-    width: 40%;
+    float:right;
+    width:48.5%;
+    padding-left: 1%;
+}
 
+#conteudo h1{
+    text-align: center;
 }
 
 #containerRodape {
-    background-color: white;
+    background-color:white;
     color:black;
     border:0px;
     margin:0px;
     padding:0px;
-    width: 100%;
-    clear: both;
-    outline: yellow solid thin;
+    width:100%;
+    clear:both;
+    text-align:center;
+    font-size:1em;
+    
 }
 
 .leiauteColunaPrincipal{
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 960px;
-    min-width: 480px;
-    width: 90%;    
+    margin-left:auto;
+    margin-right:auto;
+    max-width:960px;
+    min-width:50em;
+    width:90%;
+    //outline: yellow solid thin;
 }

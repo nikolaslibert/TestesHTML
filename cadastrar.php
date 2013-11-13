@@ -11,6 +11,9 @@ and open the template in the editor.
         <title></title>
     </head>
     <body>
+        <?php
+        // put your code here
+        ?>
         <!--------------------------------------------------------------------->        
         <div id="containerCabecalho">
             <div class="leiauteColunaPrincipal">
@@ -28,26 +31,47 @@ and open the template in the editor.
         <!--------------------------------------------------------------------->
         <div id="containerConteudo">
             <div class="leiauteColunaPrincipal">
-                <div id="conteudoEsq">
-                    <h1>Do futebol à cancha de bocha...</h1>
-                    <h2>Achar o local pro seu esporte nunca foi tão fácil.</h2>
-                    <form name="login" method="POST">
+                <div id="conteudo">
+                    <h1>Cadastro</h1>
+                    <form name="cadastrar" method="POST">
                         <p>
+                            <label>E-mail: </label><br>
                             <input type="text" name="email" placeholder="E-mail" class="campoTexto"/>
                         </p>
                         <p>
-                            <input type="password" name="senha" placeholder="Senha" class="campoTexto"/>
+                            <label>Senha: </label><br>                            
+                            <input type="password" name="senha1" placeholder="Senha" class="campoTexto"/>
+                        </p>
+                        <p>
+                            <label>Confirme sua senha: </label><br>
+                            <input type="password" name="senha2" placeholder="Confirme sua senha" class="campoTexto"/>
+                        </p>
+                        <p>
+                            <label>CPF </label><input type="radio" name="Pessoa" value="CPF" checked="checked" />
+                            <label>CNPJ </label><input type="radio" name="Pessoa" value="CNPJ"/>
+                            <br>
+                            <label>(somente números)</label>
+                            <br>
+                            <input type="text" name="cpf" placeholder="CPF" class="campoTexto"/>
+                        </p>
+                        <p>
+                            <label>Nome: </label><br>
+                            <input type="text" name="nome" placeholder="Nome" class="campoTexto"/>
+                        </p>
+                        <p>
+                            <label>Sobrenome: </label><br>
+                            <input type="text" name="sobrenome" placeholder="Sobrenome" class="campoTexto"/>
+                        </p>
+                        <p>
+                            <label>Nascimento (DD/MM/AAAA): </label><br>
+                            <input type="text" name="nascimento" placeholder="Sobrenome" class="campoTexto"/>
                         </p>
                         <p>
                             <input type="submit" value="Fazer Login" name="btoLogin" />
                         </p>
-                    </form>
-                    <p>Novo por aqui? Faça seu <a href="cadastrar.php">cadastro</a> de graça!</p>
+                    </form>                    
                 </div>
-                
-                <div id="conteudoDir">
-                    <h1>Mapa</h1>
-                </div>                
+                             
             </div>
         </div>
         <!--------------------------------------------------------------------->
@@ -59,7 +83,5 @@ and open the template in the editor.
             </div>
         </div>
         <!--------------------------------------------------------------------->
-        
-        
     </body>
 </html>
