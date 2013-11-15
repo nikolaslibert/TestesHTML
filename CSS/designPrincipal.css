@@ -158,3 +158,15 @@ p {
     width:90%;
     //outline: yellow solid thin;
 }
+
+.paiCaixaErro{
+    position:relative;
+}
+
+.caixaErro{
+    color:red;
+    position:absolute;
+    top:50%;
+    margin-top:-0.5em;
+    padding-left:1em;
+}
