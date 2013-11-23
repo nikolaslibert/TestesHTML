@@ -6,7 +6,7 @@ class agendamentoDB extends mysqli {
 
     // Dados para conexão com o banco de dados
     private $user = "usuarioPHP";
-    private $pass = "senh@D0B@ncoDeD@d0s";
+    private $pass = "123";
     private $dbName = "AgendamentoEsportes";
     private $dbHost = "localhost";
     
@@ -74,7 +74,7 @@ class agendamentoDB extends mysqli {
         $nome = $this->real_escape_string($nome);        
         
         $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('" . $email . "', '" . $senha . "')");
-        $this->query("INSERT INTO PessoaJuridica (CNPJ, Nome) VALUES ('$cnpj\', '$nome\')");
+        $this->query("INSERT INTO PessoaJuridica (CNPJ, Nome) VALUES (\'$cnpj\', \'$nome\')");
     }
 
 }

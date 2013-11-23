@@ -31,7 +31,7 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
         $erroEmail .= 'Endereço Inválido.';
     } else {
         // Verifica se e-mail já existe
-        if (agendamentoDB::getInstance()->emailCadastrado()){
+        if (agendamentoDB::getInstance()->emailCadastrado($email)){
             $erroRegistro = true;
             $erroEmail .= 'Este e-mail já está cadastrado.';
         }
@@ -103,10 +103,10 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
     if (!$erroRegistro){
         if ($pessoaFisica){
             agendamentoDB::getInstance()->criaPessoaFisica(
-                    $email, $senha, $cpf, $nome, $sobrenome, $nascimento);
+                    $email, $senha1, $cpf, $nome, $sobrenome, $nascimento);
         } else {
             agendamentoDB::getInstance()->criaPessoaJuridica(
-                    $email, $senha, $cnpj, $nome);
+                    $email, $senha1, $cnpj, $nome);
         }
         header('Location: index.php' );
         exit; 
@@ -129,9 +129,9 @@ and open the template in the editor.
         <title></title>
         
         <script>
-        $(document).ready(function(){
+        $(document).ready(function(){                       
             $("input[name=tipoId]").change(function(){
-                if ($(this).val() ==="CPF"){
+                if ($("input[name=tipoId]:checked").val() ==="CPF"){
                     $(".jQpJ, #cnpj").hide();
                     $("#cnpj").prop('disabled', true);
                     $(".jQpF, #cpf").show();
@@ -143,6 +143,8 @@ and open the template in the editor.
                     $("#cnpj").prop('disabled', false);
                }
             });           
+            
+            $("input[name=tipoId]").change();
             
             $("#senha1").keyup(function(){
                 if ($("#senha2").val() !== ""){
@@ -267,14 +269,14 @@ and open the template in the editor.
                         </p>
                         <p style="position: relative;">
                             <label for="rCPF">CPF
-                            <input type="radio" name="tipoId" value="CPF" maxlength="9" <?php
+                            <input type="radio" name="tipoId" value="CPF" maxlength="11" <?php
                                 if ($pessoaFisica){
                                     echo 'checked="checked"';
                                 }
                                 ?>/>
                             </label>
                             <label for="rCNPJ">CNPJ
-                            <input type="radio" name="tipoId" value="CNPJ" maxlength="11" <?php
+                            <input type="radio" name="tipoId" value="CNPJ" maxlength="14" <?php
                                 if (!$pessoaFisica){
                                     echo 'checked="checked"';
                                 }
@@ -283,14 +285,14 @@ and open the template in the editor.
                             <br>
                             (somente números)
                             <br>
-                            <input type="text" name="cpf" placeholder="CPF" id="cpf" maxlength="9" <?php
+                            <input type="text" name="cpf" placeholder="CPF" id="cpf" maxlength="11" <?php
                                 echo 'value="'.htmlspecialchars($cpf).'"';
                                 if (!$pessoaFisica){
                                     echo ' style="display: none;"';
                                     echo ' disabled';
                                 }
                                 ?>/>
-                            <input type="text" name="cnpj" placeholder="CNPJ" id="cnpj" maxlength="11" <?php
+                            <input type="text" name="cnpj" placeholder="CNPJ" id="cnpj" maxlength="14" <?php
                                 echo 'value="'.htmlspecialchars($cnpj).'"';
                                 if ($pessoaFisica){
                                     echo ' style="display: none;"';
