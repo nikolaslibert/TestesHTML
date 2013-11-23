@@ -1,21 +1,118 @@
 <?php
-$emailVazio = true;
-$emailJaExiste = true;
-$senhaVazia = true;
-$senhasDiferentes = true;
-$cpfVazio = true;
-$cnpjVazio = true;
-$nomeVazio = true;
-$sobrenomeVazio = true;
-$nascimentoVazio = true;
+require_once("include/db.php");
+
+$email = "";
+$senha1 = "";
+$senha2 = "";
+$pessoaFisica = true;
+$cpf = "";
+$cnpj = "";
+$nome = "";
+$sobrenome = "";
+$nascimento = "";
+
+$erroEmail = "";
+$erroSenha1 = "";
+$erroSenha2 = "";
+$erroId = "";
+$erroNome = "";
+$erroSobrenome = "";
+$erroNascimento = "";
+$erroRegistro = false;
 
 // Verifica se página foi aberta a partir do botão de cadastro
 if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
     
 // Verifica consistência dos dados informados
-    if ($_POST["user"]=="") {
-    $userIsEmpty = true;
+    // E-mail
+    $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
+    if (!$email) {
+        $erroRegistro = true;
+        $erroEmail .= 'Endereço Inválido.';
+    } else {
+        // Verifica se e-mail já existe
+        if (agendamentoDB::getInstance()->emailCadastrado()){
+            $erroRegistro = true;
+            $erroEmail .= 'Este e-mail já está cadastrado.';
+        }
     }
+    
+    // Senhas
+    $senha1 = filter_input(INPUT_POST, "senha1", FILTER_UNSAFE_RAW);
+    $senha2 = filter_input(INPUT_POST, "senha2", FILTER_UNSAFE_RAW);
+    if ($senha1 === "") {
+        $erroRegistro = true;
+        $erroSenha1 .= 'Digite uma senha.';
+    } elseif ($senha1 !== $senha2) {
+        $erroRegistro = true;
+        $erroSenha2 .= 'As senhas devem ser iguais.';
+    }
+    
+    // Nome
+    $nome = filter_input(INPUT_POST, "nome", FILTER_UNSAFE_RAW);
+    if ($nome === "") {
+        $erroRegistro = true;
+        $erroNome .= 'Campo Obrigatório.';
+    }
+    
+    // Verifica se é pessoa física ou jurídica
+    if (filter_input(INPUT_POST, "tipoId", FILTER_UNSAFE_RAW) === "CNPJ") {
+        $pessoaFisica = false;        
+    }
+    
+    if ($pessoaFisica){
+        //CPF
+        $cpf = filter_input(INPUT_POST, "cpf", FILTER_VALIDATE_REGEXP,
+                array("options" => array("regexp"=>"/^[0-9]{11}$/")));
+        if (!$cpf) {
+            $erroRegistro = true;
+            $erroId .= 'Campo Obrigatório.';
+        } else {
+            // Verifica se CPF é válido.
+        }
+        
+        //Sobrenome
+        $sobrenome = filter_input(INPUT_POST, "sobrenome", FILTER_UNSAFE_RAW);
+        if ($sobrenome === "") {
+            $erroRegistro = true;
+            $erroSobrenome .= 'Campo Obrigatório.';
+        }
+        
+        //Nascimento
+        $nascimento = filter_input(INPUT_POST, "nascimento", FILTER_VALIDATE_REGEXP,
+                array("options" => array("regexp"=>"/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/")));
+        if (!$nascimento) {
+            $erroRegistro = true;
+            $erroNascimento .= 'Campo Obrigatório.';            
+        } else {
+            // Verifica ano bissesto
+        }
+    } else {
+        //CNPJ
+        $cnpj = filter_input(INPUT_POST, "cnpj", FILTER_VALIDATE_REGEXP,
+                array("options" => array("regexp"=>"/^[0-9]{14}$/")));
+        
+        if (!$cnpj) {
+            $erroRegistro = true;
+            $erroId .= 'Campo Obrigatório.';
+        } else {
+            // Verifica se CNPJ é válido
+        }               
+    }
+    
+    if (!$erroRegistro){
+        if ($pessoaFisica){
+            agendamentoDB::getInstance()->criaPessoaFisica(
+                    $email, $senha, $cpf, $nome, $sobrenome, $nascimento);
+        } else {
+            agendamentoDB::getInstance()->criaPessoaJuridica(
+                    $email, $senha, $cnpj, $nome);
+        }
+        header('Location: index.php' );
+        exit; 
+    }
+
+    
 }
 ?>
 <!DOCTYPE html>
@@ -119,13 +216,14 @@ and open the template in the editor.
                         $("#erroId").text("");
                     }
                 }
+                erros=false;
                 if (erros===true){
                    event.preventDefault();
                 }
             });
             
         });
-        </script>
+        </script>     
         
     </head>
     <body>
@@ -151,51 +249,89 @@ and open the template in the editor.
                     <form action="cadastrar.php" name="cadastrar" method="POST">
                         <p style="position: relative;">
                             <label for="email">E-mail: </label><br>
-                            <input type="text" name="email" id="email" placeholder="E-mail"/>
-                            <span class="caixaErro" id="erroEmail">
-                                <?php
-                                
-                                ?>
-                            </span>
+                            <input type="text" name="email" id="email" placeholder="E-mail"
+                                   value="<?php echo htmlspecialchars($email); ?>"/>
+                            <span class="caixaErro" id="erroEmail"><?php echo $erroEmail;?></span>
                         </p>
                         <p style="position: relative;">
                             <label for="senha1">Senha: </label><br>                            
-                            <input type="password" name="senha1" id="senha1" placeholder="Senha"/>
-                            <span class="caixaErro" id="erroSenha1"></span>
+                            <input type="password" name="senha1" id="senha1" placeholder="Senha"
+                                   value="<?php echo htmlspecialchars($senha1); ?>"/>
+                            <span class="caixaErro" id="erroSenha1"><?php echo $erroSenha1;?></span>
                         </p>
                         <p style="position: relative;">
                             <label for="senha2">Confirme sua senha: </label><br>
-                            <input type="password" name="senha2" id="senha2" placeholder="Confirme sua senha"/>
-                            <span class="caixaErro" id="erroSenha2"></span>
+                            <input type="password" name="senha2" id="senha2" placeholder="Confirme sua senha"
+                                   value="<?php echo htmlspecialchars($senha2); ?>"/>
+                            <span class="caixaErro" id="erroSenha2"><?php echo $erroSenha2;?></span>
                         </p>
                         <p style="position: relative;">
                             <label for="rCPF">CPF
-                            <input type="radio" name="tipoId" value="CPF" checked="checked" maxlength="9"/>
+                            <input type="radio" name="tipoId" value="CPF" maxlength="9" <?php
+                                if ($pessoaFisica){
+                                    echo 'checked="checked"';
+                                }
+                                ?>/>
                             </label>
                             <label for="rCNPJ">CNPJ
-                            <input type="radio" name="tipoId" value="CNPJ" maxlength="11"/>
+                            <input type="radio" name="tipoId" value="CNPJ" maxlength="11" <?php
+                                if (!$pessoaFisica){
+                                    echo 'checked="checked"';
+                                }
+                                ?>/>
                             </label>
                             <br>
                             (somente números)
                             <br>
-                            <input type="text" name="cpf" placeholder="CPF" id="cpf" maxlength="9"/>
-                            <input type="text" name="cnpj" placeholder="CNPJ" id="cnpj" maxlength="11" style="display: none;"/>
-                            <span class="caixaErro" id="erroId"></span>
+                            <input type="text" name="cpf" placeholder="CPF" id="cpf" maxlength="9" <?php
+                                echo 'value="'.htmlspecialchars($cpf).'"';
+                                if (!$pessoaFisica){
+                                    echo ' style="display: none;"';
+                                    echo ' disabled';
+                                }
+                                ?>/>
+                            <input type="text" name="cnpj" placeholder="CNPJ" id="cnpj" maxlength="11" <?php
+                                echo 'value="'.htmlspecialchars($cnpj).'"';
+                                if ($pessoaFisica){
+                                    echo ' style="display: none;"';
+                                    echo ' disabled';
+                                }
+                                ?>/>
+                            <span class="caixaErro" id="erroId"><?php echo $erroId;?></span>
                         </p>
                         <p style="position: relative;">
                             <label for="nome">Nome: </label><br>
-                            <input type="text" name="nome" id="nome" placeholder="Nome"/>
-                            <span class="caixaErro" id="erroNome"></span>
+                            <input type="text" name="nome" id="nome" placeholder="Nome"
+                                   value="<?php echo htmlspecialchars($nome); ?>"/>
+                            <span class="caixaErro" id="erroNome"><?php echo $erroNome;?></span>
                         </p>
-                        <p class="jQpF" style="position: relative;">
+                        <p class="jQpF" style="position: relative;<?php
+                            if(!$pessoaFisica){
+                                echo ' display: none;';
+                            }
+                            ?>">
                             <label for="sobrenome">Sobrenome: </label><br>
-                            <input type="text" name="sobrenome" id="sobrenome" placeholder="Sobrenome"/>
-                            <span class="caixaErro" id="erroSobrenome"></span>
+                            <input type="text" name="sobrenome" id="sobrenome" placeholder="Sobrenome" maxlength="45" <?php
+                                echo 'value="'.htmlspecialchars($sobrenome).'"';
+                                if (!$pessoaFisica){
+                                    echo ' disabled';
+                                }
+                                ?>/>
+                            <span class="caixaErro" id="erroSobrenome"><?php echo $erroSobrenome;?></span>
                         </p>
-                        <p class="jQpF" style="position: relative;">
+                        <p class="jQpF" style="position: relative;<?php
+                            if(!$pessoaFisica){
+                                echo ' display: none;';
+                            }
+                            ?>">
                             <label for="nascimento">Nascimento (DD/MM/AAAA): </label><br>
-                            <input type="text" name="nascimento" id="nascimento" placeholder="DD/MM/AAAA" maxlength="10"/>
-                            <span class="caixaErro" id="erroNascimento"></span>
+                            <input type="text" name="nascimento" id="nascimento" placeholder="DD/MM/AAAA" maxlength="10" <?php
+                                echo 'value="'.htmlspecialchars($nascimento).'"';
+                                if (!$pessoaFisica){
+                                    echo ' disabled';
+                                }
+                                ?>/>
+                            <span class="caixaErro" id="erroNascimento"><?php echo $erroNascimento;?></span>
                         </p>
                         <p>
                             <input type="submit" value="Cadastrar" name="btoCadastrar" />
