@@ -55,16 +55,49 @@ class agendamentoDB extends mysqli {
         }
     }
             
-    public function criaPessoaFisica ($email, $senha, $cpf, $nome, $sobrenome, $nascimento){
+    private function getIdUsuario($email) {
+        $busca = $this->query("SELECT idUsuario FROM Usuario WHERE Email = '"
+                . $email . "'");        
+        if ($busca->num_rows > 0){
+            $linha = $busca->fetch_row();
+            $idUsuario = $linha[0];
+            $busca->close();            
+            return $idUsuario;
+        } else {
+            $busca->close();
+            return null;
+        }
+    }
+    
+    public function criaPessoaFisica ($email, $senha, $cpf, $nome, $sobrenome, $nascimento){        
         $email = $this->real_escape_string($email);
         $senha = $this->real_escape_string($senha);
         $cpf = $this->real_escape_string($cpf);
         $nome = $this->real_escape_string($nome);
         $sobrenome = $this->real_escape_string($sobrenome);
-        $nascimento = $this->real_escape_string($nascimento);
+        $nascimento = $nascimento[1] + $nascimento[2]*100 + $nascimento[3]*10000;
         
-        $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('" . $email . "', '" . $senha . "')");
-        $this->query("INSERT INTO PessoaFisica (Cpf, Nome, Sobrenome, Nascimento) VALUES (\'$cpf\', '$nome\', \'$sobrenome\', \'$nascimento\')");
+        $queryOK = $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('$email', '$senha')");
+        if ($queryOK){
+            $idUsuario = $this->getIdUsuario($email);            
+        } else {
+            return null;
+        }
+        
+        if ($idUsuario){
+            $queryOK = $this->query("INSERT INTO PessoaFisica (Cpf, Nome, Sobrenome, Nascimento, idUsuario) VALUES ('$cpf', '$nome', '$sobrenome', '$nascimento', '$idUsuario')");
+        } else {
+            return null;
+        }
+        
+        if ($queryOK){
+            return 1;
+        } else {
+            $queryOK = $this->query("DELETE FROM Usuario WHERE id = $idUsuario");
+            return null;
+        }
+        
+        
     }
     
     public function criaPessoaJuridica ($email, $senha, $cnpj, $nome){
@@ -73,8 +106,24 @@ class agendamentoDB extends mysqli {
         $cnpj = $this->real_escape_string($cnpj);
         $nome = $this->real_escape_string($nome);        
         
-        $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('" . $email . "', '" . $senha . "')");
-        $this->query("INSERT INTO PessoaJuridica (CNPJ, Nome) VALUES (\'$cnpj\', \'$nome\')");
+        $queryOK = $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('$email', '$senha')");
+        if ($queryOK){
+            $idUsuario = $this->getIdUsuario($email);
+        } else {
+            return null;
+        }
+        
+        if ($idUsuario){
+            $queryOK = $this->query("INSERT INTO PessoaJuridica (CNPJ, Nome, idUsuario) VALUES ('$cnpj', '$nome', '$idUsuario')");
+        } else {
+            return null;
+        }
+        
+        if ($queryOK){
+            return 1;
+        } else {    
+            $queryOK = $this->query("DELETE FROM Usuario WHERE id = $idUsuario");                    
+        }                                   
     }
 
 }

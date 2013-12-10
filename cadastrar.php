@@ -83,9 +83,15 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
                 array("options" => array("regexp"=>"/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/")));
         if (!$nascimento) {
             $erroRegistro = true;
-            $erroNascimento .= 'Campo Obrigatório.';            
-        } else {
-            // Verifica ano bissesto
+            $erroNascimento .= 'Campo Obrigatório.';
+        } else {            
+            $nascimento = sscanf($nascimento,"%u/%u/%u");
+            
+            //Verifica se data é válida
+            if (checkdate($nascimento[1], $nascimento[0], $nascimento[2])==false){
+                $erroRegistro = true;
+                $erroNascimento .= 'Data Inválida.';
+            }
         }
     } else {
         //CNPJ
@@ -102,17 +108,20 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
     
     if (!$erroRegistro){
         if ($pessoaFisica){
-            agendamentoDB::getInstance()->criaPessoaFisica(
+            $erroRegistro = agendamentoDB::getInstance()->criaPessoaFisica(
                     $email, $senha1, $cpf, $nome, $sobrenome, $nascimento);
         } else {
-            agendamentoDB::getInstance()->criaPessoaJuridica(
+            $erroRegistro = agendamentoDB::getInstance()->criaPessoaJuridica(
                     $email, $senha1, $cnpj, $nome);
         }
-        header('Location: index.php' );
-        exit; 
     }
-
     
+    if (!$erroRegistro){
+        header('Location: index.php' );
+        exit;
+    } else {
+        $erroEmail .= 'Erro desconhecido no banco de dados.';
+    }       
 }
 ?>
 <!DOCTYPE html>
@@ -218,7 +227,7 @@ and open the template in the editor.
                         $("#erroId").text("");
                     }
                 }
-                erros=false;
+                
                 if (erros===true){
                    event.preventDefault();
                 }

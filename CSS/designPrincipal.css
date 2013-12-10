@@ -57,6 +57,69 @@ p {
     // outline: yellow solid thin;    
 }
 
+#containerMenuHorizontal{
+    background-color:black;
+    color:white;
+    border:0px;
+    margin:0px;
+    padding:0px;
+    width:100%;
+    clear:both;
+    float:left;
+}
+
+.menuHorizontal{
+    float:left;
+    width:100%;
+    //background:#fff;
+    //border-bottom:4px solid white;
+    position:relative;
+}
+
+.menuHorizontal ul{
+    clear:left;
+    float:right;    
+    list-style:none;
+    margin:0;
+    padding:0;
+    position:relative;
+    right:50%;
+    text-align:center;
+}
+
+.menuHorizontal ul li{
+    display:block;
+    float:left;
+    list-style:none;
+    margin:0;
+    padding:0;
+    position:relative;
+    left:50%;
+}
+
+.menuHorizontal ul li a{
+    display:block;
+    margin:0 0 0 0px;
+    padding:3px 10px;
+    background:black;
+    color:white;
+    text-decoration:none;
+    text-transform:uppercase;
+    line-height:1.3em;
+}
+
+.menuHorizontal ul li a:hover,
+.menuHorizontal ul li a:active{
+    background-color:dimgray;
+}
+
+.menuHorizontal ul li a.active,
+.menuHorizontal ul li a.active:hover {
+   color:black;
+   background:white;
+   font-weight:bold;
+}
+
 #containerConteudo {
     //outline: red solid thin;
     background-color:black;
@@ -72,10 +135,10 @@ p {
 #containerConteudo form input[type=text],
 #containerConteudo form input[type=password]
 {
-    width: 12em;
-    border: none;
-    font-size: 1em;
-    font-family: Georgia, serif;
+    width:12em;
+    border:none;
+    font-size:1em;
+    font-family:Georgia, serif;
 }
 
 #containerConteudo h1{
@@ -169,4 +232,8 @@ p {
     top:50%;
     margin-top:-0.5em;
     padding-left:1em;
+}
+
+#datepicker a:link{
+    color:#555555;
 }
