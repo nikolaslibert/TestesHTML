@@ -1,3 +1,43 @@
+<?php
+header('Server: ');
+header('X-Powered-By: ');
+
+require_once("include/db.php");
+
+$email = "";
+$erroLogin = false;
+
+// Verifica se página foi aberta a partir do botão de cadastro
+if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
+    $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
+    if (!$email) {
+        $erroLogin = true;
+    } else {
+        $senha = filter_input(INPUT_POST, "senha", FILTER_UNSAFE_RAW);
+        // Verifica e-mail e senha
+        $idUsuario = agendamentoDB::getInstance()->autentica($email,$senha);
+        if ($idUsuario){
+            session_start();
+            session_regenerate_id();
+            $_SESSION['user'] = $idUsuario;
+            $_SESSION['tIni'] = date('d/m/y');
+            $codigoSessao = '&esporte=' . md5('Tempo: ' . $_SESSION['tIni']);
+            // Verifica se o usuário é administrador de alguma quadra
+            if (agendamentoDB::getInstance()->usuarioAdministrador()){                
+                header('Location: indexAdministrador.php?' . SID . $codigoSessao);
+                exit();
+            } else {
+                header('Location: indexUsuario.php?' . SID . $codigoSessao);
+                exit();
+            }
+        } else {
+            $erroLogin = true;
+        }
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -31,9 +71,14 @@ and open the template in the editor.
                 <div id="conteudoEsq">
                     <h1>Do futebol à cancha de bocha...</h1>
                     <h2>Achar o local pro seu esporte nunca foi tão fácil.</h2>
-                    <form name="login" method="POST">
+                    <form action="index.php" name="login" method="POST">
+                        <?php
+                            if($erroLogin){
+                                echo '<p>E-mail ou senha incorretos</p>';
+                            }
+                        ?>
                         <p>
-                            <input type="text" name="email" placeholder="E-mail" class="campoTexto"/>
+                            <input type="text" name="email" placeholder="E-mail" text="<?php echo email; ?>" class="campoTexto"/>
                         </p>
                         <p>
                             <input type="password" name="senha" placeholder="Senha" class="campoTexto"/>

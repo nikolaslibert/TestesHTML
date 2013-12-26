@@ -1,4 +1,7 @@
 <?php
+header('Server: ');
+header('X-Powered-By: ');
+
 require_once("include/db.php");
 
 $email = "";
@@ -85,10 +88,10 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
             $erroRegistro = true;
             $erroNascimento .= 'Campo Obrigatório.';
         } else {            
-            $nascimento = sscanf($nascimento,"%u/%u/%u");
+            $nascDMA = sscanf($nascimento,"%u/%u/%u");
             
             //Verifica se data é válida
-            if (checkdate($nascimento[1], $nascimento[0], $nascimento[2])==false){
+            if (checkdate($nascDMA[1], $nascDMA[0], $nascDMA[2])==false){
                 $erroRegistro = true;
                 $erroNascimento .= 'Data Inválida.';
             }
@@ -108,17 +111,22 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
     
     if (!$erroRegistro){
         if ($pessoaFisica){
-            $erroRegistro = agendamentoDB::getInstance()->criaPessoaFisica(
-                    $email, $senha1, $cpf, $nome, $sobrenome, $nascimento);
+            $idUsuario = agendamentoDB::getInstance()->criaPessoaFisica(
+                    $email, $senha1, $cpf, $nome, $sobrenome, $nascDMA);
         } else {
-            $erroRegistro = agendamentoDB::getInstance()->criaPessoaJuridica(
+            $idUsuario = agendamentoDB::getInstance()->criaPessoaJuridica(
                     $email, $senha1, $cnpj, $nome);
         }
     }
     
-    if (!$erroRegistro){
-        header('Location: index.php' );
-        exit;
+    if ($idUsuario){
+        session_start();
+        session_regenerate_id();
+        $_SESSION['user'] = $idUsuario;
+        $_SESSION['tIni'] = date('d/m/y');
+        $codigoSessao = '&esporte=' . md5('Tempo: ' . $_SESSION['tIni']);
+        header('Location: indexUsuario.php?' . SID . $codigoSessao);
+        exit();
     } else {
         $erroEmail .= 'Erro desconhecido no banco de dados.';
     }       

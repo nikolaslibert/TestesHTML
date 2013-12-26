@@ -41,6 +41,34 @@ class agendamentoDB extends mysqli {
         parent::close();
     }
     
+    // Faz a autenticação
+    public function autentica($email,$senha){
+        $email = $this->real_escape_string($email);
+        $senha = $this->real_escape_string($senha);
+        $busca = $this->query("SELECT idUsuario FROM Usuario WHERE Email = '"
+                . $email . "' AND Senha = '" . $senha . "'");
+        
+        if ($busca->num_rows > 0){
+            $linha = $busca->fetch_row();
+            $idUsuario = $linha[0];
+            $busca->close();            
+            return $idUsuario;
+        } else {
+            $busca->close();
+            return null;
+        }
+    }
+    
+    // Verifica se o usuário está na lista de administradores
+    public function usuarioAdministrador($idUsuario){
+        $busca = $this->query("SELECT 1 FROM Administrador WHERE idUsuario = '"
+                . $idUsuario . "'");
+        $resultado = $busca->data_seek(0);
+        $busca->close();
+        return $resultado;
+    }
+
+
     // Verifica se o e-mail já está cadastrado no servidor
     public function emailCadastrado($email) {
         $email = $this->real_escape_string($email);
@@ -54,20 +82,6 @@ class agendamentoDB extends mysqli {
             return false;
         }
     }
-            
-    private function getIdUsuario($email) {
-        $busca = $this->query("SELECT idUsuario FROM Usuario WHERE Email = '"
-                . $email . "'");        
-        if ($busca->num_rows > 0){
-            $linha = $busca->fetch_row();
-            $idUsuario = $linha[0];
-            $busca->close();            
-            return $idUsuario;
-        } else {
-            $busca->close();
-            return null;
-        }
-    }
     
     public function criaPessoaFisica ($email, $senha, $cpf, $nome, $sobrenome, $nascimento){        
         $email = $this->real_escape_string($email);
@@ -75,29 +89,30 @@ class agendamentoDB extends mysqli {
         $cpf = $this->real_escape_string($cpf);
         $nome = $this->real_escape_string($nome);
         $sobrenome = $this->real_escape_string($sobrenome);
-        $nascimento = $nascimento[1] + $nascimento[2]*100 + $nascimento[3]*10000;
+        $nascimento = $nascimento[0] + $nascimento[1]*100 + $nascimento[2]*10000;
         
-        $queryOK = $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('$email', '$senha')");
-        if ($queryOK){
-            $idUsuario = $this->getIdUsuario($email);            
-        } else {
-            return null;
-        }
+        try{
+            $this->autocommit(false);
         
-        if ($idUsuario){
+            $queryOK = $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('$email', '$senha')");
+            if (!$queryOK){
+                throw new Exception($this->error);  
+            }
+            
+            $idUsuario = $this->insert_id;
             $queryOK = $this->query("INSERT INTO PessoaFisica (Cpf, Nome, Sobrenome, Nascimento, idUsuario) VALUES ('$cpf', '$nome', '$sobrenome', '$nascimento', '$idUsuario')");
-        } else {
+            if (!$queryOK){
+                throw new Exception($this->error);  
+            }
+            
+            $this->commit();
+            $this->autocommit(true);
+        } catch (Exception $e){
+            $this->rollback();
+            $this->autocommit(true);
             return null;
         }
-        
-        if ($queryOK){
-            return 1;
-        } else {
-            $queryOK = $this->query("DELETE FROM Usuario WHERE id = $idUsuario");
-            return null;
-        }
-        
-        
+        return $idUsuario;        
     }
     
     public function criaPessoaJuridica ($email, $senha, $cnpj, $nome){
@@ -106,24 +121,28 @@ class agendamentoDB extends mysqli {
         $cnpj = $this->real_escape_string($cnpj);
         $nome = $this->real_escape_string($nome);        
         
-        $queryOK = $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('$email', '$senha')");
-        if ($queryOK){
-            $idUsuario = $this->getIdUsuario($email);
-        } else {
-            return null;
-        }
-        
-        if ($idUsuario){
+        try {
+            $this->autocommit(false);
+            
+            $queryOK = $this->query("INSERT INTO Usuario (Email, Senha) VALUES ('$email', '$senha')");
+            if (!$queryOK){
+                throw new Exception($this->error);  
+            }
+            
+            $idUsuario = $this->insert_id;
             $queryOK = $this->query("INSERT INTO PessoaJuridica (CNPJ, Nome, idUsuario) VALUES ('$cnpj', '$nome', '$idUsuario')");
-        } else {
+            if (!$queryOK){
+                throw new Exception($this->error);  
+            }
+            
+            $this->commit();
+            $this->autocommit(true);
+        } catch (Exception $e) {
+            $this->rollback();
+            $this->autocommit(true);
             return null;
-        }
-        
-        if ($queryOK){
-            return 1;
-        } else {    
-            $queryOK = $this->query("DELETE FROM Usuario WHERE id = $idUsuario");                    
-        }                                   
+        }               
+        return $idUsuario;       
     }
 
 }

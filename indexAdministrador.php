@@ -1,3 +1,18 @@
+<?php
+session_start();
+$codigoSessao = md5('Tempo: ' . $_SESSION['tIni']);
+if(filter_input(INPUT_GET, "esporte", FILTER_UNSAFE_RAW) !== $codigoSessao){
+    $_SESSION = array();
+    if (isset($_COOKIE[session_name()])) {
+        setcookie(session_name(), '', time()-42000, '/');
+    }
+    session_destroy();
+    
+    header('Location: index.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -66,6 +81,44 @@ and open the template in the editor.
                 
                 <div id="conteudoDir">
                     <h1>Mapa</h1>
+
+                    <table border="0">
+                        <thead>
+                            <tr>
+                                <th>Horário</th>
+                                <th>Quadra1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="4">00:00</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4">01:00</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                            </tr>                            
+                        </tbody>
+                    </table>
+
                 </div>                
             </div>
         </div>
