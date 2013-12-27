@@ -1,16 +1,16 @@
 <?php
-session_start();
-$codigoSessao = md5('Tempo: ' . $_SESSION['tIni']);
-if(filter_input(INPUT_GET, "esporte", FILTER_UNSAFE_RAW) !== $codigoSessao){
-    $_SESSION = array();
-    if (isset($_COOKIE[session_name()])) {
-        setcookie(session_name(), '', time()-42000, '/');
-    }
-    session_destroy();
-    
-    header('Location: index.php');
-    exit();
-}
+//session_start();
+//$codigoSessao = md5('Tempo: ' . $_SESSION['tIni']);
+//if(filter_input(INPUT_GET, "esporte", FILTER_UNSAFE_RAW) !== $codigoSessao){
+//    $_SESSION = array();
+//    if (isset($_COOKIE[session_name()])) {
+//        setcookie(session_name(), '', time()-42000, '/');
+//    }
+//    session_destroy();
+//    
+//    header('Location: index.php');
+//    exit();
+//}
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +21,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <meta charset="UTF-8">
+        <meta charset="UTF-8">        
         <link rel="stylesheet" type="text/css" href="CSS/designPrincipal.css">
         <link href="CSS/smoothness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
         <script src="include/jquery-1.10.2.js"></script>
@@ -29,14 +29,52 @@ and open the template in the editor.
         
         <script>
         $(function() {
-            $( "#datepicker" ).datepicker({
+            $("#datepicker").datepicker({
                 changeMonth: true,
                 changeYear: true,
                 showOtherMonths: true,
-                dayNamesMin: [ "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab" ],
-                monthNamesShort: [ "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez" ]
+                dayNamesMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
+                monthNamesShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                onSelect: function(Data, Inst){
+                    $("h2").text(Data);
+                }
             });
+            
+            $('#tabelaHorarios').html(criaTabela(3));
+            
+            function criaTabela(numQuadras) {
+                var html = [];
+                html.push('<table><thead><tr><th><div>Horários</div></th>');
+                for (i = 0; i < numQuadras; i++) {
+                    html.push('<th><div>Quadra ' + i + '</div></th>');
+                }
+                html.push('</tr></thead><tbody>');
+
+                for (i = 0; i < 24; i++) {
+                    html.push('<tr><td rowspan="4">');
+                    html.push('<div>&nbsp;' + i + '</div></td>');
+                    for (j = 0; j < numQuadras; j++) {
+                        html.push('<td><div>&nbsp;0</div></td>');
+                    }
+                    html.push('</tr>');
+                    
+                    for (i2 = 0; i2 < 3; i2++){
+                        html.push('<tr>');
+                        for (j = 0; j < numQuadras; j++) {
+                            html.push('<td><div>&nbsp;0</div></td>');
+                        }
+                        html.push('</tr>');
+                    }
+                }
+                html.push('</tbody></table>');
+                return html.join('');
+            }
         });
+        
+//        $(document).ready(function (){           
+//            var currentDate = $("#datepicker").datepicker("getDate");
+//            $("h2").text(currentDate);
+//        });        
         </script>
         <title></title>
     </head>
@@ -81,44 +119,7 @@ and open the template in the editor.
                 
                 <div id="conteudoDir">
                     <h1>Mapa</h1>
-
-                    <table border="0">
-                        <thead>
-                            <tr>
-                                <th>Horário</th>
-                                <th>Quadra1</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td rowspan="4">00:00</td>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td rowspan="4">01:00</td>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                            </tr>                            
-                        </tbody>
-                    </table>
-
+                    <div id="tabelaHorarios"></div>                    
                 </div>                
             </div>
         </div>

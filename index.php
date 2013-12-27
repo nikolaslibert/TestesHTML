@@ -18,16 +18,21 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
         $idUsuario = agendamentoDB::getInstance()->autentica($email,$senha);
         if ($idUsuario){
             session_start();
-            session_regenerate_id();
+            session_regenerate_id();            
             $_SESSION['user'] = $idUsuario;
-            $_SESSION['tIni'] = date('d/m/y');
-            $codigoSessao = '&esporte=' . md5('Tempo: ' . $_SESSION['tIni']);
+            $_SESSION['tIni'] = date('d/m/y U');
+            
+            $paramGet = '?';
+            if (SID!=NULL){
+                $paramGet = htmlspecialchars(SID) . '&';
+            }
+            $paramGet .= 'esporte=' . md5('Tempo: ' . $_SESSION['tIni']);
             // Verifica se o usuário é administrador de alguma quadra
-            if (agendamentoDB::getInstance()->usuarioAdministrador()){                
-                header('Location: indexAdministrador.php?' . SID . $codigoSessao);
+            if (agendamentoDB::getInstance()->usuarioAdministrador($idUsuario)){                
+                header('Location: indexAdministrador.php' . $paramGet);
                 exit();
-            } else {
-                header('Location: indexUsuario.php?' . SID . $codigoSessao);
+            } else {                
+                header('Location: indexUsuario.php' . $paramGet);
                 exit();
             }
         } else {

@@ -234,6 +234,8 @@ p {
     padding-left:1em;
 }
 
-#datepicker a:link{
+#datepicker a:link,
+#datepicker a:visited
+{
     color:#555555;
 }

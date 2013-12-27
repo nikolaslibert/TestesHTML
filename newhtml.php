@@ -10,8 +10,8 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <style>
-            td{ border: 1px solid #666; cursor:pointer}
-            div { padding:0 8px; }
+            td{ border: 0px solid #666; cursor:pointer}
+            div { padding:0 2px; }
             .selected{ background: green}
         </style>
         

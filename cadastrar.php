@@ -121,11 +121,16 @@ if (filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
     
     if ($idUsuario){
         session_start();
-        session_regenerate_id();
+        session_regenerate_id();            
         $_SESSION['user'] = $idUsuario;
-        $_SESSION['tIni'] = date('d/m/y');
-        $codigoSessao = '&esporte=' . md5('Tempo: ' . $_SESSION['tIni']);
-        header('Location: indexUsuario.php?' . SID . $codigoSessao);
+        $_SESSION['tIni'] = date('d/m/y U');
+
+        $paramGet = '?';
+        if (SID!=NULL){
+            $paramGet = htmlspecialchars(SID) . '&';
+        }
+        $paramGet .= 'esporte=' . md5('Tempo: ' . $_SESSION['tIni']);
+        header('Location: indexUsuario.php' . $paramGet);
         exit();
     } else {
         $erroEmail .= 'Erro desconhecido no banco de dados.';
