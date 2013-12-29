@@ -40,11 +40,11 @@ and open the template in the editor.
                 }
             });
             
-            $('#tabelaHorarios').html(criaTabela(3));
+            $('#tabelaHorarios').html(criaTabela(2));
             
             function criaTabela(numQuadras) {
-                var html = [];
-                html.push('<table><thead><tr><th><div>Horários</div></th>');
+                var html = '';
+                html += '<table><thead><tr><th><div>Horários</div></th>';
                 for (i = 0; i < numQuadras; i++) {
                     html.push('<th><div>Quadra ' + i + '</div></th>');
                 }
