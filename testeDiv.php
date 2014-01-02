@@ -24,9 +24,16 @@ and open the template in the editor.
                 font-size: 0.75em;
             }
             
-            .trContainer ul{
+            .trBg{
+                float: left;
                 position: relative;
-                left: 50%; 
+                left: 50%;
+                outline: black solid thin;
+                padding: 1em;
+                background-color: #ccc;
+            }
+            
+            .trContainer ul{
                 float: left;
                 list-style:none;
                 margin:0;
@@ -37,17 +44,15 @@ and open the template in the editor.
                 line-height: 3em;
             }
             .trContainer ul .trListaHorasOffset{
-                height: 1em;
+                height: 1.5em;
             }
             
             .trIndisponivel{
                 background-color: black;
-                outline: thin white dashed;
             }
             
             .trReservado{
                 background-color: gray;
-                outline: thin yellow dashed;
             }
             
             .trRegistro{
@@ -56,37 +61,40 @@ and open the template in the editor.
             }
             
             #r1{
-                top: 20.5em;
+                top: 36em;
                 height: 3em;
             }
             #r2{
-                top: 8.5em;
+                top: 9em;
                 height: 1.5em;
             }
             #r3{
-                top: 2.5em;
+                top: 3em;
                 height: 1.5em;
             }
             #r4{
-                top: 2.5em;
+                top: 3em;
                 height: 18em;
             }
             .trConteudo{
-                position: relative;
-                left: 50%;
                 float: left;
             }
             div.trColQuadra{
-                margin-left: 1em;
+                //margin-left: 1em;
                 position: relative;
                 float: left;
-                height: 76em; //1em+3*25
-                max-width: 12em;
-                min-width: 6em;
-                //outline: black thin solid;
+                height: 74.5em; //2.5em+3*24
+                //max-width: 12em;
+                min-width: 8em;
             }
             div.trNomeQuadra{
-                width: 100%;
+                outline: black thin solid;
+                background-color: #555;
+                padding: 0.75em;
+                font-size: 1em;
+                color: #ffffff;
+                margin-left: auto;
+                margin-right: auto;
             }
             
             
@@ -99,47 +107,48 @@ and open the template in the editor.
         ?>
         <div class="tabelaReservas">
             <div class="trContainer">
-                <ul>
-                    <li class="trListaHorasOffset"></li>
-                    <li>00:00 -</li>
-                    <li>01:00 -</li>
-                    <li>02:00 -</li>
-                    <li>03:00 -</li>
-                    <li>04:00 -</li>
-                    <li>05:00 -</li>
-                    <li>06:00 -</li>
-                    <li>07:00 -</li>
-                    <li>08:00 -</li>
-                    <li>09:00 -</li>
-                    <li>10:00 -</li>
-                    <li>11:00 -</li>
-                    <li>12:00 -</li>
-                    <li>13:00 -</li>
-                    <li>14:00 -</li>
-                    <li>15:00 -</li>
-                    <li>16:00 -</li>
-                    <li>17:00 -</li>
-                    <li>18:00 -</li>
-                    <li>19:00 -</li>
-                    <li>20:00 -</li>
-                    <li>21:00 -</li>
-                    <li>22:00 -</li>
-                    <li>23:00 -</li>
-                    <li>24:00 -</li>
-                </ul>
-                <div class="trConteudo">
-                    <div class="trColQuadra">
-                        <div class="trNomeQuadra">Quadra 1</div>
-                        <div id="r4" class="trIndisponivel trRegistro"></div>
-                        <div id="r1" class="trReservado trRegistro">Reserva 1</div>
-                    </div>
-                    <div class="trColQuadra">
-                        <div class="trNomeQuadra">Quadra 2</div>
-                        <div id="r2" class="trReservado trRegistro">Reserva 2</div>
-                        <div id="r3" class="trReservado trRegistro">Reserva 3</div>
+                <div class="trBg">
+                    <ul>
+                        <li class="trListaHorasOffset"></li>
+                        <li>00:00 -</li>
+                        <li>01:00 -</li>
+                        <li>02:00 -</li>
+                        <li>03:00 -</li>
+                        <li>04:00 -</li>
+                        <li>05:00 -</li>
+                        <li>06:00 -</li>
+                        <li>07:00 -</li>
+                        <li>08:00 -</li>
+                        <li>09:00 -</li>
+                        <li>10:00 -</li>
+                        <li>11:00 -</li>
+                        <li>12:00 -</li>
+                        <li>13:00 -</li>
+                        <li>14:00 -</li>
+                        <li>15:00 -</li>
+                        <li>16:00 -</li>
+                        <li>17:00 -</li>
+                        <li>18:00 -</li>
+                        <li>19:00 -</li>
+                        <li>20:00 -</li>
+                        <li>21:00 -</li>
+                        <li>22:00 -</li>
+                        <li>23:00 -</li>
+                        <li>24:00 -</li>
+                    </ul>
+                    <div class="trConteudo">
+                        <div class="trColQuadra">
+                            <div class="trNomeQuadra">Quadra 1</div>
+                            <div id="r4" class="trIndisponivel trRegistro"></div>
+                            <div id="r1" class="trReservado trRegistro">Reserva 1</div>
+                        </div>
+                        <div class="trColQuadra">
+                            <div class="trNomeQuadra">Quadra 2</div>
+                            <div id="r2" class="trReservado trRegistro">Reserva 2</div>
+                            <div id="r3" class="trReservado trRegistro">Reserva 3</div>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
         
