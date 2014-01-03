@@ -34,10 +34,11 @@ and open the template in the editor.
             var metodos = {
                 inicializa : function(argumentos) {
                     config = $.extend({
-                        teste1: "abc",
-                        teste2: "cde"
+                        espacamento: 3,
+                        offsetPrimeiraLinha: 1.5
                     }, argumentos );
-                
+                    this.data(config);
+                    
                     var html = '';
                     html += '<div class="trContainer"><div class="trBg">';
                     html += '<ul><li class="trListaHorasOffset"></li>';
@@ -45,29 +46,42 @@ and open the template in the editor.
                         html += '<li>' + (i<10 ? '0'+i : i)  + ':00 -</li>';
                     }
                     html += '</ul>';
-                    html += '<div class="trConteudo"></div>';
-                    html += '</div></div>';
-                
-                    return this.html(html);
+                    html += '<div class="trConteudo">';
+                    html += '<div class="trColUlt">';
+                    html += '<a class="trBtnNovaQuadra tr" href="">+</a>';
+                    html += '</div></div></div></div>';
+                    this.html(html);
+                    
+                    this.find("ul li").css({
+                        "height":config.espacamento+"em",
+                        "line-height":config.espacamento+"em"
+                    });
+                    this.find("ul .trListaHorasOffset").css({
+                        "height":config.offsetPrimeiraLinha+"em"
+                    });
+                    
+                    return this;
                 },
                 adicionaQuadra : function(idQuadras) {
-                    var tabela = this.find(".trConteudo");
+                    var tabela = this.find(".trColUlt");
                     var html;
                     if (!$.isArray(idQuadras)){idQuadras=[idQuadras];}
                     $.each(idQuadras, function(i , id){
                         html = '';
                         html += '<div class="trColQuadra" numQ="'+ id +'">';
-                        html += '<div class="trNomeQuadra">Quadra ' + (id+1) + '</div>';
-                        html += '</div>';
-                        tabela.append(html);
+                        html += '<div class="trNomeQuadra">';
+                        html += 'Quadra ' + (id+1);
+                        html += '<a class="trBtnFechaQuadra tr" href="">X</a>';
+                        html += '</div></div>';
+                        tabela.before(html);
                     });                    
                     return this;
                 },
                 removeQuadra : function(idQuadras) {
-                    var tabela = this.find(".trConteudo");
                     if (idQuadras === undefined){
-                        tabela.empty();
+                        this.find(".trColQuadra").remove();
                     } else {
+                        var tabela = this.find(".trConteudo");
                         if (!$.isArray(idQuadras)){idQuadras=[idQuadras];}
                         $.each(idQuadras, function(i , id){
                             tabela.find('[numQ="' + id + '"]').remove();
@@ -76,10 +90,11 @@ and open the template in the editor.
                     return this;
                 },
                 limpaQuadra : function(idQuadras) {
-                    if (!idQuadras){
+                    if (idQuadras === undefined){
                         this.find(".trColQuadra").children().
                                 not(".trNomeQuadra").remove();
                     } else {
+                        if (!$.isArray(idQuadras)){idQuadras=[idQuadras];}
                         var tabela = this.find(".trConteudo");
                         $.each(idQuadras, function(i , id){
                             tabela.find('[numQ="' + id + '"]').children().
@@ -90,6 +105,8 @@ and open the template in the editor.
                 },
                 adicionaReserva : function(reservas) {
                     var tabela = this.find(".trConteudo");
+                    var esp = this.data("espacamento");
+                    var offset = this.data("offsetPrimeiraLinha");
                     var html;
                     var quadra;
                     if (!$.isArray(reservas)){reservas=[reservas];}
@@ -100,8 +117,28 @@ and open the template in the editor.
                         html += 'Reserva ' + reserva.id + '</div>';
                         quadra.append(html);
                         quadra.find('[numR="' + reserva.id + '"]').css({
-                            "top":((reserva.horario)*3+3)+"em",
-                            "height":((reserva.duracao)*3)+"em"
+                            "top":((reserva.horario)*esp+offset+esp/2) + "em",
+                            "height":((reserva.duracao)*esp) + "em"
+                        });
+                    });
+                    return this;
+                },
+                adicionaRestricao :  function(restricoes) {
+                    var tabela = this.find(".trConteudo");
+                    var esp = this.data("espacamento");
+                    var offset = this.data("offsetPrimeiraLinha");
+                    var html;
+                    var quadra;
+                    if (!$.isArray(restricoes)){restricoes=[restricoes];}
+                    $.each(restricoes, function(i, restricao){                      
+                        quadra = tabela.find('[numQ="' + restricao.quadra + '"]');
+                        html = '';
+                        html += '<div numR="' + restricao.id + '" class="trIndisponivel trRegistro">';
+                        html += '</div>';
+                        quadra.append(html);
+                        quadra.find('[numR="' + restricao.id + '"]').css({
+                            "top":((restricao.horario)*esp+offset+esp/2) + "em",
+                            "height":((restricao.duracao)*esp) + "em"
                         });
                     });
                     return this;
@@ -132,14 +169,26 @@ and open the template in the editor.
             });
             
             $('#tabelaReservas').tabelaReservas({
-                teste1: "Fuja dos Raposões! "
+                espacamento: 2,
+                offsetPrimeiraLinha: 2
             });
              
             $('#tabelaReservas').tabelaReservas('adicionaQuadra',[0,1,2]);
             $('#tabelaReservas').tabelaReservas('adicionaReserva',[
-                {quadra: 0, id: 0, horario: 5, duracao: 1},
-                {quadra: 0, id: 1, horario: 7, duracao: 3}
+                {quadra: 0, id: 0, horario: 8, duracao: 0.5},
+                {quadra: 0, id: 1, horario: 11, duracao: 3},
+                {quadra: 1, id: 0, horario: 22, duracao: 1}
             ]);
+            $('#tabelaReservas').tabelaReservas('adicionaRestricao',[
+                {quadra: 0, id: 2, horario: 0, duracao: 8},
+                {quadra: 0, id: 3, horario: 23, duracao: 1},
+                {quadra: 1, id: 1, horario: 0, duracao: 8},
+                {quadra: 1, id: 2, horario: 23, duracao: 1},
+                {quadra: 2, id: 0, horario: 0, duracao: 8},
+                {quadra: 2, id: 1, horario: 23, duracao: 1}
+            ]);
+            $('#tabelaReservas').tabelaReservas('limpaQuadra',2);
+            //$('#tabelaReservas').tabelaReservas('limpaQuadra');
 //            function adicionaQuadra(var nomeQuadra) {
 //                var html = '';
 //                html += '<div class="trColQuadra">';

@@ -87,16 +87,50 @@ and open the template in the editor.
                 //max-width: 12em;
                 min-width: 8em;
             }
+            div.trColUlt{
+                float: left;
+                width: 4em;
+                padding: 0.25em;
+            }
+            
             div.trNomeQuadra{
+                position: relative;
                 outline: black thin solid;
                 background-color: #555;
                 padding: 0.75em;
                 font-size: 1em;
                 color: #ffffff;
-                margin-left: auto;
-                margin-right: auto;
             }
             
+            a.tr{
+                color: white;
+                display: block;
+                text-align: center;
+                font-weight: bold;
+                text-decoration: none;
+            }
+            a.trBtnNovaQuadra{
+                margin-left: auto;
+                margin-right: auto;
+                width: 1em;
+                height: 1em;
+                line-height: 1em;
+                font-size: 2em;
+            }
+            a.trBtnFechaQuadra{
+                width: 1em;
+                height: 1.1em;
+                line-height: 1.1em;
+                font-size: 0.7em;
+                position: absolute;
+                top: 0px;
+                right: 2px;
+            }
+            a.tr:hover,
+            a.tr:active{
+                color: black;
+                background-color:white;
+            }
             
         </style>
         
@@ -138,7 +172,10 @@ and open the template in the editor.
                     </ul>
                     <div class="trConteudo">
                         <div class="trColQuadra">
-                            <div class="trNomeQuadra">Quadra 1</div>
+                            <div class="trNomeQuadra">
+                                Quadra 1 123456 32566
+                                <a class="trBtnFechaQuadra tr" href="">X</a>
+                            </div>
                             <div id="r4" class="trIndisponivel trRegistro"></div>
                             <div id="r1" class="trReservado trRegistro">Reserva 1</div>
                         </div>
@@ -146,6 +183,9 @@ and open the template in the editor.
                             <div class="trNomeQuadra">Quadra 2</div>
                             <div id="r2" class="trReservado trRegistro">Reserva 2</div>
                             <div id="r3" class="trReservado trRegistro">Reserva 3</div>
+                        </div>
+                        <div class="trColUlt">
+                            <a class="trBtnNovaQuadra tr" href="">+</a>
                         </div>
                     </div>
                 </div>

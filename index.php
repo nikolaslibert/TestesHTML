@@ -92,7 +92,7 @@ and open the template in the editor.
                             <input type="submit" value="Fazer Login" name="btoLogin" />
                         </p>
                     </form>
-                    <p>Novo por aqui? Faça seu <a href="cadastrar.php">cadastro</a> de graça!</p>
+                    <p>Novo por aqui? Faça seu <a href="cadastrar.php" class="linkPadrao">cadastro</a> de graça!</p>
                 </div>
                 
                 <div id="conteudoDir">
