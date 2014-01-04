@@ -158,17 +158,14 @@ p {
     padding:0em 0em 1em 2em;
 }
 
-a.linkPadrao:link{
+a.linkPadrao:link,
+a.linkPadrao:visited{
     color: white;
     font-weight: bold;
 }
 a.linkPadrao:hover{
     color: white;
     font-weight: lighter;
-}
-a.linkPadrao:visited{
-    color: white;
-    font-weight: bold;
 }
 a.linkPadrao:active{
     color: black;

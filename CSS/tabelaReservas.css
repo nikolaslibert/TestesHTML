@@ -46,7 +46,7 @@ and open the template in the editor.
 }
 
 .trIndisponivel{
-    background-color: #006699
+    background-color: black;
 }
 
 .trReservado{
@@ -67,8 +67,14 @@ div.trColQuadra{
     margin-left: 0.5em;
     position: relative;
     float: left;
-    height: 74.5em; //2.5em+3*24
     min-width: 8em;
+}
+div.trBgQuadra{
+    position: absolute;
+    width: 100%;
+    background-color: #006699;
+    border-bottom: thin dotted white;
+    border-top: thin dotted white;
 }
 div.trNomeQuadra{
     outline: black thin solid;
@@ -85,14 +91,10 @@ div.trColUlt{
 a.trBtnNovaQuadra{
     margin-left: auto;
     margin-right: auto;
-    width: 1em;
-    height: 1em;
     line-height: 1em;
     font-size: 2em;
 }
 a.trBtnFechaQuadra{
-    width: 1em;
-    height: 1.1em;
     line-height: 1.1em;
     font-size: 0.7em;
     position: absolute;
@@ -100,21 +102,19 @@ a.trBtnFechaQuadra{
     right: 2px;
 }
 a.tr{
-    color: white;
+    width: 1em;
     display: block;
     text-align: center;
     font-weight: bold;
     text-decoration: none;
 }
-a:hover.tr,
-a:hover.tr.trBtnNovaQuadra,
-a.tr.trBtnNovaQuadra:active{
-    color: black;
-    background-color:white;
-}
-a.tr:hover{
-    color: black;
-}
+
+a.tr:link,
 a.tr:visited{
     color: white;
+}
+a.tr:hover,
+a.tr:active{
+    color: black;
+    background-color:white;
 }

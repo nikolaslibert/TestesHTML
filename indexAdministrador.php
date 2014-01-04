@@ -36,7 +36,7 @@ and open the template in the editor.
                     config = $.extend({
                         espacamento: 3,
                         offsetPrimeiraLinha: 1.5
-                    }, argumentos );
+                    }, argumentos.config);
                     this.data(config);
                     
                     var html = '';
@@ -52,28 +52,55 @@ and open the template in the editor.
                     html += '</div></div></div></div>';
                     this.html(html);
                     
-                    this.find("ul li").css({
-                        "height":config.espacamento+"em",
-                        "line-height":config.espacamento+"em"
-                    });
-                    this.find("ul .trListaHorasOffset").css({
-                        "height":config.offsetPrimeiraLinha+"em"
-                    });
-                    
+                    var cssDinamico ='.trContainer ul li{';
+                    cssDinamico += 'height: ' +
+                            config.espacamento +'em;';
+                    cssDinamico += 'line-height: ' +
+                            config.espacamento + 'em;}';
+                    cssDinamico += '.trContainer ul .trListaHorasOffset{';
+                    cssDinamico += 'height: ' +
+                            config.offsetPrimeiraLinha + 'em;}';
+                    cssDinamico += 'div.trColQuadra{';
+                    cssDinamico += 'height: ' +
+                            (config.offsetPrimeiraLinha+config.espacamento*24.5) + 'em;}';
+                    cssDinamico += 'div.trBgQuadra{';
+                    cssDinamico += 'height: ' +
+                            config.espacamento*24 + 'em;';
+                    cssDinamico += 'top: ' +
+                            (config.offsetPrimeiraLinha+config.espacamento/2) + 'em;}';
+                    $('<style>' + cssDinamico + '</style>').appendTo( "head" );
+
+                    if (argumentos.quadras !== undefined){
+                        metodos.adicionaQuadra.call(this,argumentos.quadras);
+                    }
                     return this;
                 },
-                adicionaQuadra : function(idQuadras) {
-                    var tabela = this.find(".trColUlt");
-                    var html;
-                    if (!$.isArray(idQuadras)){idQuadras=[idQuadras];}
-                    $.each(idQuadras, function(i , id){
-                        html = '';
-                        html += '<div class="trColQuadra" numQ="'+ id +'">';
-                        html += '<div class="trNomeQuadra">';
-                        html += 'Quadra ' + (id+1);
-                        html += '<a class="trBtnFechaQuadra tr" href="">X</a>';
-                        html += '</div></div>';
-                        tabela.before(html);
+                adicionaQuadra : function(quadras) {
+                    var ultimaColuna = this.find(".trColUlt");
+                    var contexto = this;
+                    if (!$.isArray(quadras)){quadras=[quadras];}
+                    
+                    $.each(quadras, function(i , quadra){
+                        $('<div/>').addClass('trColQuadra').attr('numQ',quadra.numSeq).
+                            append(
+                            $('<div/>').addClass('trNomeQuadra').
+                                append(
+                                'Quadra ' + (quadra.numSeq+1)).
+                                append(
+                                $('<a href="">X</a>').
+                                addClass('trBtnFechaQuadra tr'))).
+                            append(
+                            $('<div/>').addClass('trBgQuadra')).
+                        insertBefore(ultimaColuna).
+                        data('id', quadra.id);
+                        
+                        if (quadra.registros !== undefined){
+                            metodos.adicionaRegistro.call(contexto,{
+                                registros: quadra.registros,
+                                numSeq: quadra.numSeq
+                            });
+                        }
+                
                     });                    
                     return this;
                 },
@@ -91,35 +118,38 @@ and open the template in the editor.
                 },
                 limpaQuadra : function(idQuadras) {
                     if (idQuadras === undefined){
-                        this.find(".trColQuadra").children().
-                                not(".trNomeQuadra").remove();
+                        this.find(".trColQuadra").find(".trRegistro").remove();
                     } else {
                         if (!$.isArray(idQuadras)){idQuadras=[idQuadras];}
                         var tabela = this.find(".trConteudo");
                         $.each(idQuadras, function(i , id){
-                            tabela.find('[numQ="' + id + '"]').children().
-                                    not(".trNomeQuadra").remove();
+                            tabela.find('[numQ="' + id + '"]').
+                                    find(".trRegistro").remove();
                         });
                     }
                     return this;
                 },
-                adicionaReserva : function(reservas) {
-                    var tabela = this.find(".trConteudo");
+                adicionaRegistro : function(Argumentos) {
+                    var quadra = this.find(".trConteudo").
+                            find('[numQ="' + Argumentos.numSeq + '"]');;
                     var esp = this.data("espacamento");
                     var offset = this.data("offsetPrimeiraLinha");
-                    var html;
-                    var quadra;
-                    if (!$.isArray(reservas)){reservas=[reservas];}
-                    $.each(reservas, function(i, reserva){                      
-                        quadra = tabela.find('[numQ="' + reserva.quadra + '"]');
-                        html = '';
-                        html += '<div numR="' + reserva.id + '" class="trReservado trRegistro">';
-                        html += 'Reserva ' + reserva.id + '</div>';
-                        quadra.append(html);
-                        quadra.find('[numR="' + reserva.id + '"]').css({
-                            "top":((reserva.horario)*esp+offset+esp/2) + "em",
-                            "height":((reserva.duracao)*esp) + "em"
-                        });
+                    var registros=Argumentos.registros;
+                    if (!$.isArray(registros)){registros=[registros];}
+                    $.each(registros, function(i, registro){                      
+                        var elemento = $('<div/>').addClass('trRegistro').
+                                css({
+                                    "top":((registro.hora)*esp+offset+esp/2) + "em",
+                                    "height":((registro.tempo)*esp) + "em"
+                                });
+                        if (registro.id !== undefined){
+                            elemento.data('id',registro.id).
+                                    text('reservado').
+                                    addClass('trReservado');
+                        } else {
+                            elemento.addClass('trIndisponivel');
+                        }
+                        quadra.append(elemento);
                     });
                     return this;
                 },
@@ -169,26 +199,44 @@ and open the template in the editor.
             });
             
             $('#tabelaReservas').tabelaReservas({
-                espacamento: 2,
-                offsetPrimeiraLinha: 2
+                config: {
+                    espacamento: 2,
+                    offsetPrimeiraLinha: 2
+                },
+                quadras: [
+                    {id: 123, numSeq: 0,
+                    registros: [
+                        {hora: 8, tempo: 0.5, id: 14},
+                        {hora: 11, tempo: 3, id: 10},
+                        {hora: 0, tempo: 8},
+                        {hora: 23, tempo: 1}
+                    ]},
+                    {id: 375, numSeq: 1,
+                    registros: [
+                        {hora: 8, tempo: 0.5, id: 11},
+                        {hora: 11, tempo: 3, id: 18},
+                        {hora: 0, tempo: 8},
+                        {hora: 23, tempo: 1}
+                    ]}
+                ]
             });
              
-            $('#tabelaReservas').tabelaReservas('adicionaQuadra',[0,1,2]);
-            $('#tabelaReservas').tabelaReservas('adicionaReserva',[
-                {quadra: 0, id: 0, horario: 8, duracao: 0.5},
-                {quadra: 0, id: 1, horario: 11, duracao: 3},
-                {quadra: 1, id: 0, horario: 22, duracao: 1}
-            ]);
-            $('#tabelaReservas').tabelaReservas('adicionaRestricao',[
-                {quadra: 0, id: 2, horario: 0, duracao: 8},
-                {quadra: 0, id: 3, horario: 23, duracao: 1},
-                {quadra: 1, id: 1, horario: 0, duracao: 8},
-                {quadra: 1, id: 2, horario: 23, duracao: 1},
-                {quadra: 2, id: 0, horario: 0, duracao: 8},
-                {quadra: 2, id: 1, horario: 23, duracao: 1}
-            ]);
-            $('#tabelaReservas').tabelaReservas('limpaQuadra',2);
-            //$('#tabelaReservas').tabelaReservas('limpaQuadra');
+//            $('#tabelaReservas').tabelaReservas('adicionaQuadra',[0,1,2]);
+//            $('#tabelaReservas').tabelaReservas('adicionaReserva',[
+//                {quadra: 0, id: 0, horario: 8, duracao: 0.5},
+//                {quadra: 0, id: 1, horario: 11, duracao: 3},
+//                {quadra: 1, id: 0, horario: 22, duracao: 1}
+//            ]);
+//            $('#tabelaReservas').tabelaReservas('adicionaRestricao',[
+//                {quadra: 0, id: 2, horario: 0, duracao: 8},
+//                {quadra: 0, id: 3, horario: 23, duracao: 1},
+//                {quadra: 1, id: 1, horario: 0, duracao: 8},
+//                {quadra: 1, id: 2, horario: 23, duracao: 1},
+//                {quadra: 2, id: 0, horario: 0, duracao: 8},
+//                {quadra: 2, id: 1, horario: 23, duracao: 1}
+//            ]);
+//            $('#tabelaReservas').tabelaReservas('limpaQuadra',2);
+
 //            function adicionaQuadra(var nomeQuadra) {
 //                var html = '';
 //                html += '<div class="trColQuadra">';
