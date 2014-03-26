@@ -31,6 +31,20 @@ and open the template in the editor.
         <script>
         
         (function ($){
+            var eventos = {
+                fechaQuadra : function(event) {            
+                    event.preventDefault();
+                    event.stopPropagation();
+                    var numQ = $(this).closest("div.trColQuadra").attr("numQ");
+                    metodos.removeQuadra.call(event.data,numQ);
+                },
+                adicionaQuadra: function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    alert('Adiciona quadra');
+                }
+            };
+            
             var metodos = {
                 inicializa : function(argumentos) {
                     config = $.extend({
@@ -73,6 +87,10 @@ and open the template in the editor.
                     if (argumentos.quadras !== undefined){
                         metodos.adicionaQuadra.call(this,argumentos.quadras);
                     }
+                    
+                    this.find(".trConteudo").on("click","a.trBtnFechaQuadra",this,eventos.fechaQuadra);
+                    this.find(".trBtnNovaQuadra").on("click",eventos.adicionaQuadra);
+                    
                     return this;
                 },
                 adicionaQuadra : function(quadras) {
@@ -131,7 +149,7 @@ and open the template in the editor.
                 },
                 adicionaRegistro : function(Argumentos) {
                     var quadra = this.find(".trConteudo").
-                            find('[numQ="' + Argumentos.numSeq + '"]');;
+                            find('[numQ="' + Argumentos.numSeq + '"]');
                     var esp = this.data("espacamento");
                     var offset = this.data("offsetPrimeiraLinha");
                     var registros=Argumentos.registros;
@@ -150,26 +168,6 @@ and open the template in the editor.
                             elemento.addClass('trIndisponivel');
                         }
                         quadra.append(elemento);
-                    });
-                    return this;
-                },
-                adicionaRestricao :  function(restricoes) {
-                    var tabela = this.find(".trConteudo");
-                    var esp = this.data("espacamento");
-                    var offset = this.data("offsetPrimeiraLinha");
-                    var html;
-                    var quadra;
-                    if (!$.isArray(restricoes)){restricoes=[restricoes];}
-                    $.each(restricoes, function(i, restricao){                      
-                        quadra = tabela.find('[numQ="' + restricao.quadra + '"]');
-                        html = '';
-                        html += '<div numR="' + restricao.id + '" class="trIndisponivel trRegistro">';
-                        html += '</div>';
-                        quadra.append(html);
-                        quadra.find('[numR="' + restricao.id + '"]').css({
-                            "top":((restricao.horario)*esp+offset+esp/2) + "em",
-                            "height":((restricao.duracao)*esp) + "em"
-                        });
                     });
                     return this;
                 }
@@ -221,55 +219,14 @@ and open the template in the editor.
                 ]
             });
              
-//            $('#tabelaReservas').tabelaReservas('adicionaQuadra',[0,1,2]);
-//            $('#tabelaReservas').tabelaReservas('adicionaReserva',[
-//                {quadra: 0, id: 0, horario: 8, duracao: 0.5},
-//                {quadra: 0, id: 1, horario: 11, duracao: 3},
-//                {quadra: 1, id: 0, horario: 22, duracao: 1}
-//            ]);
-//            $('#tabelaReservas').tabelaReservas('adicionaRestricao',[
-//                {quadra: 0, id: 2, horario: 0, duracao: 8},
-//                {quadra: 0, id: 3, horario: 23, duracao: 1},
-//                {quadra: 1, id: 1, horario: 0, duracao: 8},
-//                {quadra: 1, id: 2, horario: 23, duracao: 1},
-//                {quadra: 2, id: 0, horario: 0, duracao: 8},
-//                {quadra: 2, id: 1, horario: 23, duracao: 1}
-//            ]);
-//            $('#tabelaReservas').tabelaReservas('limpaQuadra',2);
-
-//            function adicionaQuadra(var nomeQuadra) {
-//                var html = '';
-//                html += '<div class="trColQuadra">';
-//                html += '<div class="trNomeQuadra">' + nomeQuadra + '</div>';
-//                html += '</div>';
-//                $('.trConteudo').append(html);
-//            }
-//                var html = '';
-//                html += '<table><thead><tr><th><div>Horários</div></th>';
-//                for (i = 0; i < numQuadras; i++) {
-//                    html.push('<th><div>Quadra ' + i + '</div></th>');
-//                }
-//                html.push('</tr></thead><tbody>');
-//
-//                for (i = 0; i < 24; i++) {
-//                    html.push('<tr><td rowspan="4">');
-//                    html.push('<div>&nbsp;' + i + '</div></td>');
-//                    for (j = 0; j < numQuadras; j++) {
-//                        html.push('<td><div>&nbsp;0</div></td>');
-//                    }
-//                    html.push('</tr>');
-//                    
-//                    for (i2 = 0; i2 < 3; i2++){
-//                        html.push('<tr>');
-//                        for (j = 0; j < numQuadras; j++) {
-//                            html.push('<td><div>&nbsp;0</div></td>');
-//                        }
-//                        html.push('</tr>');
-//                    }
-//                }
-//                html.push('</tbody></table>');
-//                return html.join('');
-//            }
+            $('#tabelaReservas').tabelaReservas('adicionaQuadra',
+                    {id: 124, numSeq: 2,
+                    registros: [
+                        {hora: 8, tempo: 0.5, id: 114},
+                        {hora: 11, tempo: 3, id: 110},
+                        {hora: 0, tempo: 8},
+                        {hora: 23, tempo: 1}
+                    ]});
         });
         
 //        $(document).ready(function (){           
