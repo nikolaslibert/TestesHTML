@@ -32,16 +32,21 @@ and open the template in the editor.
         
         (function ($){
             var eventos = {
+                adicionaQuadra: function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.data.find(".trContainerCxSelQ").show();
+                },
+                fechaCxSelQ: function(event) {            
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.data.find(".trContainerCxSelQ").hide();
+                },
                 fechaQuadra : function(event) {            
                     event.preventDefault();
                     event.stopPropagation();
                     var numQ = $(this).closest("div.trColQuadra").attr("numQ");
                     metodos.removeQuadra.call(event.data,numQ);
-                },
-                adicionaQuadra: function(event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    alert('Adiciona quadra');
                 }
             };
             
@@ -53,18 +58,55 @@ and open the template in the editor.
                     }, argumentos.config);
                     this.data(config);
                     
-                    var html = '';
-                    html += '<div class="trContainer"><div class="trBg">';
-                    html += '<ul><li class="trListaHorasOffset"></li>';
+                    var listaHoras = "";
                     for (i = 0; i < 25; i++){
-                        html += '<li>' + (i<10 ? '0'+i : i)  + ':00 -</li>';
+                        listaHoras += '<li>' + (i<10 ? '0'+i : i)  + ':00 -</li>';
                     }
-                    html += '</ul>';
-                    html += '<div class="trConteudo">';
-                    html += '<div class="trColUlt">';
-                    html += '<a class="trBtnNovaQuadra tr" href="">+</a>';
-                    html += '</div></div></div></div>';
-                    this.html(html);
+                    
+                    var cxSelQ = $('<div/>').addClass("trCxSelQ");
+                    
+                    $('<div/>').addClass("trContainer").
+                    append(
+                        $('<div/>').addClass("trBg").
+                        append(
+                            $('<ul/>').
+                            append(
+                                $('<li/>').addClass("trListaHorasOffset")).
+                            append(
+                                listaHoras)
+                        ).
+                        append(
+                            $('<div/>').addClass("trConteudo").
+                            append(
+                                $('<div/>').addClass("trContainerCxSelQ").
+                                hide().
+                                append(
+                                    cxSelQ
+                                )
+                            ).
+                            append(
+                                $('<div/>').addClass("trColUlt").
+                                append(
+                                    $('<a href="">+</a>').addClass("trBtnNovaQuadra tr")
+                                )
+                            )
+                        )
+                    ).appendTo(this);
+                    
+                    cxSelQ.
+                    append(
+                        $('<div/>').addClass('trCxSelQTitulo').
+                        append(
+                            'Quadras Visíveis'
+                        ).
+                        append(
+                            $('<a href="">X</a>').
+                            addClass('trBtnFechaCxSelQ tr')
+                        )
+                    ).
+                    append(
+                        $('<h2/>').text("Não há quadras cadastradas.")
+                    );
                     
                     var cssDinamico ='.trContainer ul li{';
                     cssDinamico += 'height: ' +
@@ -89,7 +131,8 @@ and open the template in the editor.
                     }
                     
                     this.find(".trConteudo").on("click","a.trBtnFechaQuadra",this,eventos.fechaQuadra);
-                    this.find(".trBtnNovaQuadra").on("click",eventos.adicionaQuadra);
+                    this.find(".trBtnNovaQuadra").on("click",this,eventos.adicionaQuadra);
+                    this.find(".trBtnFechaCxSelQ").on("click",this,eventos.fechaCxSelQ);
                     
                     return this;
                 },
@@ -100,15 +143,19 @@ and open the template in the editor.
                     
                     $.each(quadras, function(i , quadra){
                         $('<div/>').addClass('trColQuadra').attr('numQ',quadra.numSeq).
-                            append(
+                        append(
                             $('<div/>').addClass('trNomeQuadra').
-                                append(
-                                'Quadra ' + (quadra.numSeq+1)).
-                                append(
-                                $('<a href="">X</a>').
-                                addClass('trBtnFechaQuadra tr'))).
                             append(
-                            $('<div/>').addClass('trBgQuadra')).
+                                'Quadra ' + (quadra.numSeq+1)
+                            ).
+                            append(
+                                $('<a href="">X</a>').
+                                addClass('trBtnFechaQuadra tr')
+                            )
+                        ).
+                        append(
+                            $('<div/>').addClass('trBgQuadra')
+                        ).
                         insertBefore(ultimaColuna).
                         data('id', quadra.id);
                         
@@ -268,17 +315,19 @@ and open the template in the editor.
         <!--------------------------------------------------------------------->
         <div id="containerConteudo">
             <div class="leiauteColunaPrincipal">
-                <div id="conteudoEsq">
-                    <h1>Do futebol à cancha de bocha...</h1>
-                    <h2>Achar o local pro seu esporte nunca foi tão fácil.</h2>
-                    <div id="datepicker"></div>
-                    
+                <div id="conteudo">
+                    <div id="conteudoEsq">
+                        <h1>Do futebol à cancha de bocha...</h1>
+                        <h2>Achar o local pro seu esporte nunca foi tão fácil.</h2>
+                        <div id="datepicker"></div>
+
+                    </div>
+
+                    <div id="conteudoDir">
+                        <h1>Mapa</h1>
+                        <div id="tabelaReservas"></div>                    
+                    </div>
                 </div>
-                
-                <div id="conteudoDir">
-                    <h1>Mapa</h1>
-                    <div id="tabelaReservas"></div>                    
-                </div>                
             </div>
         </div>
         <!--------------------------------------------------------------------->

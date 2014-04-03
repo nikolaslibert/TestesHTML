@@ -73,31 +73,33 @@ and open the template in the editor.
         <!--------------------------------------------------------------------->
         <div id="containerConteudo">
             <div class="leiauteColunaPrincipal">
-                <div id="conteudoEsq">
-                    <h1>Do futebol à cancha de bocha...</h1>
-                    <h2>Achar o local pro seu esporte nunca foi tão fácil.</h2>
-                    <form action="index.php" name="login" method="POST">
-                        <?php
-                            if($erroLogin){
-                                echo '<p>E-mail ou senha incorretos</p>';
-                            }
-                        ?>
-                        <p>
-                            <input type="text" name="email" placeholder="E-mail" text="<?php echo email; ?>" class="campoTexto"/>
-                        </p>
-                        <p>
-                            <input type="password" name="senha" placeholder="Senha" class="campoTexto"/>
-                        </p>
-                        <p>
-                            <input type="submit" value="Fazer Login" name="btoLogin" />
-                        </p>
-                    </form>
-                    <p>Novo por aqui? Faça seu <a href="cadastrar.php" class="linkPadrao">cadastro</a> de graça!</p>
+                <div id="conteudo">
+                    <div id="conteudoEsq">
+                        <h1>Do futebol à cancha de bocha...</h1>
+                        <h2>Achar o local pro seu esporte nunca foi tão fácil.</h2>
+                        <form action="index.php" name="login" method="POST">
+                            <?php
+                                if($erroLogin){
+                                    echo '<p>E-mail ou senha incorretos</p>';
+                                }
+                            ?>
+                            <p>
+                                <input type="text" name="email" placeholder="E-mail" text="<?php echo email; ?>" class="campoTexto"/>
+                            </p>
+                            <p>
+                                <input type="password" name="senha" placeholder="Senha" class="campoTexto"/>
+                            </p>
+                            <p>
+                                <input type="submit" value="Fazer Login" name="btoLogin" />
+                            </p>
+                        </form>
+                        <p>Novo por aqui? Faça seu <a href="cadastrar.php" class="linkPadrao">cadastro</a> de graça!</p>
+                    </div>
+
+                    <div id="conteudoDir">
+                        <h1>Mapa</h1>
+                    </div>
                 </div>
-                
-                <div id="conteudoDir">
-                    <h1>Mapa</h1>
-                </div>                
             </div>
         </div>
         <!--------------------------------------------------------------------->

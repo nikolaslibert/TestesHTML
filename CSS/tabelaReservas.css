@@ -63,6 +63,20 @@ and open the template in the editor.
 .trConteudo{
     float: left;
 }
+
+div.trContainerCxSelQ{
+    position: absolute;
+    right: 50%;
+    top: 20%;
+}
+div.trCxSelQ{
+    position: relative;
+    z-index: 1;
+    left: 50%;
+    min-width: 20em;
+    color: black;
+    background-color: white;
+}
 div.trColQuadra{
     margin-left: 0.5em;
     position: relative;
@@ -83,6 +97,12 @@ div.trNomeQuadra{
     font-size: 1em;
     color: #ffffff;
 }
+div.trCxSelQTitulo{
+    outline: black thin solid;
+    background-color: #555;
+    font-size: 1em;
+    color: #ffffff;
+}
 div.trColUlt{
     float: left;
     width: 4em;
@@ -95,6 +115,13 @@ a.trBtnNovaQuadra{
     font-size: 2em;
 }
 a.trBtnFechaQuadra{
+    line-height: 1.1em;
+    font-size: 0.7em;
+    position: absolute;
+    top: 0px;
+    right: 2px;
+}
+a.trBtnFechaCxSelQ{
     line-height: 1.1em;
     font-size: 0.7em;
     position: absolute;
